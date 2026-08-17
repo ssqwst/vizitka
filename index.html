@@ -1,1 +1,581 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SQST — Подарки</title>
+    <style>
+        /* ===== ОБЩИЕ СБРОСЫ ===== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
+            background-color: #1a1818;
+            color: #e0d6d6;
+            line-height: 1.6;
+        }
+
+        /* ===== ФОНОВОЕ ИЗОБРАЖЕНИЕ С "ЛУЧОМ СВЕТА" ===== */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 40px 20px;
+            position: relative;
+            background: #1a1818;
+            overflow: hidden;
+        }
+
+        /* Луч света */
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: -20%;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80%;
+            max-width: 700px;
+            height: 60%;
+            background: radial-gradient(ellipse at top, rgba(210, 180, 140, 0.08) 0%, transparent 70%);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .hero * {
+            position: relative;
+            z-index: 1;
+        }
+
+        /* ===== ХЕДЕР ===== */
+        .header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            padding: 18px 30px;
+            background: rgba(26, 24, 24, 0.85);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(210, 180, 140, 0.06);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 100;
+            transition: 0.3s;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            letter-spacing: 4px;
+            color: #d4c8c8;
+        }
+
+        .logo span {
+            color: #c9a87c;
+        }
+
+        .header-tag {
+            font-size: 0.8rem;
+            color: #8a7e7e;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            font-weight: 300;
+        }
+
+        /* ===== ГЛАВНЫЙ ЗАГОЛОВОК ===== */
+        .hero-title {
+            font-size: clamp(2rem, 6vw, 3.8rem);
+            font-weight: 400;
+            color: #f0ece6;
+            max-width: 900px;
+            margin: 0 auto 20px;
+            letter-spacing: 1px;
+        }
+
+        .hero-title .gold {
+            color: #c9a87c;
+            font-weight: 500;
+        }
+
+        .hero-sub {
+            font-size: clamp(1rem, 2vw, 1.4rem);
+            color: #8a7e7e;
+            max-width: 600px;
+            margin: 0 auto;
+            font-weight: 300;
+            letter-spacing: 0.5px;
+        }
+
+        .hero-sub .italic {
+            font-style: italic;
+            color: #a89888;
+        }
+
+        /* ===== ОБЩИЕ БЛОКИ ===== */
+        .section {
+            max-width: 820px;
+            margin: 0 auto;
+            padding: 80px 24px 60px;
+        }
+
+        .section-title {
+            font-size: clamp(1.6rem, 4vw, 2.6rem);
+            font-weight: 300;
+            color: #f0ece6;
+            margin-bottom: 30px;
+            letter-spacing: 1px;
+        }
+
+        .section-title .gold {
+            color: #c9a87c;
+        }
+
+        /* ===== БЛОК «ЗНАКОМО?» ===== */
+        .pain-list {
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+        }
+
+        .pain-item {
+            font-size: clamp(1rem, 1.6vw, 1.2rem);
+            color: #c4b8b0;
+            padding: 16px 24px;
+            border-left: 2px solid rgba(201, 168, 124, 0.15);
+            background: rgba(255, 255, 255, 0.02);
+            border-radius: 4px;
+            transition: 0.3s;
+            opacity: 0;
+            transform: translateY(20px);
+            animation: fadeUp 0.7s ease forwards;
+        }
+
+        .pain-item:nth-child(1) { animation-delay: 0.1s; }
+        .pain-item:nth-child(2) { animation-delay: 0.25s; }
+        .pain-item:nth-child(3) { animation-delay: 0.4s; }
+        .pain-item:nth-child(4) { animation-delay: 0.55s; }
+        .pain-item:nth-child(5) { animation-delay: 0.7s; }
+
+        .pain-item .highlight {
+            color: #c9a87c;
+            font-weight: 400;
+        }
+
+        @keyframes fadeUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* ===== БЛОК ЭМОЦИЙ (СЕТКА) ===== */
+        .emotion-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 16px;
+            margin: 10px 0 24px;
+        }
+
+        .emotion-card {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(201, 168, 124, 0.06);
+            border-radius: 12px;
+            padding: 20px 12px;
+            text-align: center;
+            transition: 0.3s;
+            color: #b0a498;
+            font-size: 1rem;
+            letter-spacing: 1px;
+            opacity: 0;
+            transform: scale(0.95);
+            animation: scaleIn 0.5s ease forwards;
+        }
+
+        .emotion-card:nth-child(1) { animation-delay: 0.1s; }
+        .emotion-card:nth-child(2) { animation-delay: 0.25s; }
+        .emotion-card:nth-child(3) { animation-delay: 0.4s; }
+        .emotion-card:nth-child(4) { animation-delay: 0.55s; }
+
+        .emotion-card .emoji {
+            display: block;
+            font-size: 2rem;
+            margin-bottom: 6px;
+        }
+
+        .emotion-card .gold {
+            color: #c9a87c;
+            font-weight: 400;
+        }
+
+        @keyframes scaleIn {
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        /* ===== БЛОК ПРИЧИН ===== */
+        .reason-item {
+            font-size: clamp(1rem, 1.6vw, 1.2rem);
+            color: #c4b8b0;
+            padding: 12px 0 12px 28px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.02);
+            position: relative;
+            opacity: 0;
+            transform: translateX(-10px);
+            animation: slideIn 0.5s ease forwards;
+        }
+
+        .reason-item:nth-child(1) { animation-delay: 0.1s; }
+        .reason-item:nth-child(2) { animation-delay: 0.25s; }
+        .reason-item:nth-child(3) { animation-delay: 0.4s; }
+        .reason-item:nth-child(4) { animation-delay: 0.55s; }
+
+        .reason-item::before {
+            content: '—';
+            position: absolute;
+            left: 0;
+            color: #c9a87c;
+            opacity: 0.4;
+        }
+
+        @keyframes slideIn {
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        /* ===== БЛОК ПРО ПОЛОВИНКУ ===== */
+        .quote-block {
+            background: rgba(201, 168, 124, 0.03);
+            border-left: 2px solid rgba(201, 168, 124, 0.15);
+            padding: 16px 24px;
+            margin: 8px 0;
+            border-radius: 4px;
+            font-size: clamp(1rem, 1.6vw, 1.15rem);
+            color: #d4c8c8;
+            opacity: 0;
+            transform: translateY(15px);
+            animation: fadeUp 0.6s ease forwards;
+        }
+
+        .quote-block:nth-child(1) { animation-delay: 0.1s; }
+        .quote-block:nth-child(2) { animation-delay: 0.25s; }
+        .quote-block:nth-child(3) { animation-delay: 0.4s; }
+
+        .quote-block .italic {
+            font-style: italic;
+            color: #b0a498;
+        }
+
+        /* ===== БЛОК С НАМЁКОМ ===== */
+        .hint-block {
+            text-align: center;
+            padding: 20px 0 10px;
+        }
+
+        .hint-block .big-text {
+            font-size: clamp(1.3rem, 2.6vw, 2rem);
+            color: #f0ece6;
+            max-width: 700px;
+            margin: 0 auto 16px;
+            font-weight: 300;
+            letter-spacing: 0.5px;
+        }
+
+        .hint-block .big-text .gold {
+            color: #c9a87c;
+            font-weight: 400;
+        }
+
+        .hint-block .sub {
+            color: #8a7e7e;
+            font-size: clamp(0.95rem, 1.4vw, 1.1rem);
+            max-width: 550px;
+            margin: 0 auto 30px;
+            font-style: italic;
+        }
+
+        /* ===== ЕДИНСТВЕННАЯ КНОПКА ===== */
+        .btn-chat {
+            display: inline-block;
+            background: rgba(201, 168, 124, 0.08);
+            border: 1px solid rgba(201, 168, 124, 0.15);
+            color: #c9a87c;
+            padding: 16px 48px;
+            border-radius: 60px;
+            text-decoration: none;
+            font-size: 1rem;
+            letter-spacing: 2px;
+            transition: 0.4s;
+            font-weight: 400;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-chat:hover {
+            background: rgba(201, 168, 124, 0.12);
+            border-color: rgba(201, 168, 124, 0.25);
+            transform: scale(1.01);
+            box-shadow: 0 0 40px rgba(201, 168, 124, 0.03);
+        }
+
+        .btn-chat .emoji {
+            margin-right: 8px;
+        }
+
+        /* ===== ФУТЕР ===== */
+        .footer {
+            border-top: 1px solid rgba(255, 255, 255, 0.02);
+            padding: 40px 24px 50px;
+            text-align: center;
+            max-width: 820px;
+            margin: 0 auto;
+        }
+
+        .footer .brand {
+            font-size: 1.2rem;
+            letter-spacing: 4px;
+            color: #d4c8c8;
+            margin-bottom: 12px;
+        }
+
+        .footer .brand span {
+            color: #c9a87c;
+        }
+
+        .footer .heart {
+            color: #c9a87c;
+            font-weight: 300;
+        }
+
+        .footer .message {
+            color: #6a6060;
+            font-size: 0.9rem;
+            max-width: 480px;
+            margin: 10px auto 0;
+            font-style: italic;
+            line-height: 1.6;
+        }
+
+        .footer .message .gold {
+            color: #c9a87c;
+        }
+
+        /* ===== РАЗДЕЛИТЕЛЬНЫЕ ЛИНИИ ===== */
+        .divider {
+            width: 40px;
+            height: 1px;
+            background: rgba(201, 168, 124, 0.15);
+            margin: 20px 0 30px;
+        }
+
+        /* ===== АДАПТАЦИЯ ===== */
+        @media (max-width: 600px) {
+            .header {
+                padding: 12px 18px;
+            }
+            .logo {
+                font-size: 1.2rem;
+            }
+            .header-tag {
+                font-size: 0.6rem;
+            }
+            .section {
+                padding: 50px 16px 40px;
+            }
+            .pain-item {
+                padding: 12px 16px;
+                font-size: 0.95rem;
+            }
+            .emotion-grid {
+                grid-template-columns: 1fr 1fr;
+                gap: 10px;
+            }
+            .emotion-card {
+                padding: 14px 8px;
+                font-size: 0.85rem;
+            }
+            .btn-chat {
+                padding: 14px 30px;
+                font-size: 0.9rem;
+                width: 100%;
+                text-align: center;
+            }
+            .footer {
+                padding: 30px 16px 40px;
+            }
+            .footer .message {
+                font-size: 0.8rem;
+            }
+            .quote-block {
+                padding: 12px 16px;
+                font-size: 0.95rem;
+            }
+            .reason-item {
+                font-size: 0.95rem;
+                padding: 10px 0 10px 20px;
+            }
+        }
+
+        @media (max-width: 400px) {
+            .hero-title {
+                font-size: 1.6rem;
+            }
+            .section-title {
+                font-size: 1.3rem;
+            }
+            .emotion-grid {
+                grid-template-columns: 1fr 1fr;
+                gap: 6px;
+            }
+            .emotion-card {
+                font-size: 0.75rem;
+                padding: 10px 6px;
+            }
+            .emotion-card .emoji {
+                font-size: 1.4rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ===== ХЕДЕР ===== -->
+    <header class="header">
+        <div class="logo">SQST</div>
+        <div class="header-tag">Подарки</div>
+    </header>
+
+    <!-- ===== ГЛАВНЫЙ ЭКРАН ===== -->
+    <section class="hero">
+        <h1 class="hero-title">
+            Не знаешь, что подарить<br>своей <span class="gold">второй половинке</span>?
+        </h1>
+        <p class="hero-sub">
+            <span class="italic">Ты не один.</span> 80% людей чувствуют то же самое перед каждым праздником.
+        </p>
+    </section>
+
+    <!-- ===== БЛОК «ЗНАКОМО?» ===== -->
+    <section class="section">
+        <h2 class="section-title">Знакомо?</h2>
+        <div class="pain-list">
+            <div class="pain-item">
+                «Близится День рождения. Или годовщина. Или 8 Марта. А у тебя — <span class="highlight">пустота</span>»
+            </div>
+            <div class="pain-item">
+                «Ты уже перерыл весь интернет в поисках идей. <span class="highlight">Всё одно и то же</span>»
+            </div>
+            <div class="pain-item">
+                «Цветы? Дарил 5 раз. Духи? У неё уже стоят на полке. Носки? <span class="highlight">Серьёзно?</span>»
+            </div>
+            <div class="pain-item">
+                «Ты хочешь удивить. Но все идеи кажутся банальными. <span class="highlight">Ты злишься на себя</span>»
+            </div>
+            <div class="pain-item">
+                «В итоге ты покупаешь первое, что попалось, и думаешь: <span class="highlight">"Ну хоть что-то"</span>»
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== БЛОК ЭМОЦИЙ ===== -->
+    <section class="section">
+        <h2 class="section-title">А что ты <span class="gold">чувствуешь</span>?</h2>
+        <div class="emotion-grid">
+            <div class="emotion-card">
+                <span class="emoji">😔</span>
+                Разочарование
+            </div>
+            <div class="emotion-card">
+                <span class="emoji">😣</span>
+                Вина
+            </div>
+            <div class="emotion-card">
+                <span class="emoji">😰</span>
+                Страх
+            </div>
+            <div class="emotion-card">
+                <span class="emoji">😮‍💨</span>
+                Апатия
+            </div>
+        </div>
+        <p style="color: #8a7e7e; font-size: 1.05rem; text-align: center; margin-top: 8px;">
+            <span style="color: #c9a87c; font-weight: 300;">Я знаю эти чувства.</span> Потому что сама через это проходила.
+        </p>
+    </section>
+
+    <!-- ===== БЛОК ПРИЧИН ===== -->
+    <section class="section">
+        <h2 class="section-title">Почему так <span class="gold">сложно</span>?</h2>
+        <div class="reason-item">Потому что настоящие подарки — это не вещи. <span style="color: #c9a87c;">Это эмоции</span></div>
+        <div class="reason-item">Но чтобы подарить эмоцию, нужно придумать что-то личное. <span style="color: #8a7e7e;">А времени нет</span></div>
+        <div class="reason-item">Или ты боишься, что твоя идея покажется глупой</div>
+        <div class="reason-item">Или ты не знаешь, как воплотить её в жизнь</div>
+        <p style="color: #8a7e7e; text-align: right; font-style: italic; margin-top: 16px; font-size: 1rem;">
+            <span style="color: #c9a87c;">Я понимаю.</span> Это действительно сложно.
+        </p>
+    </section>
+
+    <!-- ===== БЛОК ПРО ВТОРУЮ ПОЛОВИНКУ ===== -->
+    <section class="section">
+        <h2 class="section-title">Что чувствует <span class="gold">твоя вторая половинка</span>?</h2>
+        <div class="quote-block">
+            «Она говорит: <span class="italic">"Мне ничего не надо"</span>. Но ты же знаешь — это не правда»
+        </div>
+        <div class="quote-block">
+            «Он говорит: <span class="italic">"Не траться"</span>. Но ты же знаешь, что сюрпризы любят все»
+        </div>
+        <div class="quote-block">
+            «Они ждут чуда. Даже если <span class="italic">молчат об этом</span>»
+        </div>
+        <p style="color: #8a7e7e; font-size: 1.05rem; text-align: center; margin-top: 20px;">
+            И ты хочешь дать им это чудо. Но <span style="color: #c9a87c;">не знаешь — как</span>.
+        </p>
+    </section>
+
+    <!-- ===== БЛОК С НАМЁКОМ ===== -->
+    <section class="section" style="padding-bottom: 20px;">
+        <div class="hint-block">
+            <div class="big-text">
+                Что если я скажу, что <span class="gold">выход есть</span>?
+            </div>
+            <p class="sub">
+                «Есть способ удивить так, что это запомнят навсегда. Я знаю, потому что <span style="color: #c9a87c;">я его придумала</span>»
+            </p>
+            <p class="sub" style="font-size: clamp(0.85rem, 1.2vw, 1rem); margin-top: -10px;">
+                «Но не буду рассказывать здесь. Потому что это личное.<br>
+                Это история, которую я хочу рассказать <span style="color: #c9a87c;">тебе лично</span>»
+            </p>
+
+            <div style="margin-top: 35px;">
+                <a href="https://t.me/ssqwst" target="_blank" class="btn-chat">
+                    <span class="emoji">💬</span> Напиши мне — я расскажу
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== ФУТЕР ===== -->
+    <footer class="footer">
+        <div class="brand">SQST <span>❤</span> Сделано с душой</div>
+        <div class="message">
+            «Если ты дочитал до конца — значит, проблема действительно есть.<br>
+            <span class="gold">Напиши мне, я помогу</span>»
+        </div>
+    </footer>
+
+</body>
+</html>
